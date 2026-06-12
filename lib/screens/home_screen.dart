@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../controllers/config_controller.dart';
 import '../widgets/sc_editor.dart';
+import '../widgets/schedule_editor.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -230,15 +231,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                     Expanded(
                                       child: SingleChildScrollView(
-                                        child: ScEditor(
-                                          selected: alarm.sc,
+                                        child: Column(
+                                          children: [
+                                            ScEditor(
+                                              selected: alarm.sc,
 
-                                          refresh: () {
-                                            controller.config.refresh();
-                                          },
+                                              refresh: () {
+                                                controller.config.refresh();
+                                              },
+                                            ),
+                                            const SizedBox(height: 30),
+                                            ScheduleEditor(
+                                              tim: alarm.tim,
+                                              refresh: () {
+                                                controller.config.refresh();
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                    const SizedBox(height: 30),
                                   ],
                                 ),
                               ),
