@@ -1,13 +1,33 @@
-import 'package:get/get.dart';
+import 'dart:convert';
 
+import 'package:get/get.dart';
 import '../models/config_model.dart';
+import '../services/json_service.dart';
 
 class ConfigController extends GetxController {
   final config = Rxn<ConfigModel>();
+  final _jsonService = JsonService();
 
+  String currentFileName = "config.json";
   final selectedAlarm = 0.obs;
 
   bool get hasConfig => config.value != null;
+
+  Future<void> openJson() async {
+    final content = await _jsonService.pickJsonFile();
+
+    if (content == null) return;
+
+    final map = jsonDecode(content);
+
+    config.value = ConfigModel.fromJson(map);
+  }
+
+  void saveJson() {
+    if (config.value == null) return;
+
+    _jsonService.downloadJson(config.value!.toJson(), currentFileName);
+  }
 
   void setConfig(ConfigModel model) {
     config.value = model;
