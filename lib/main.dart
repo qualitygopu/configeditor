@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'controllers/config_controller.dart';
 import 'app/theme/app_theme.dart';
 import 'screens/home_screen.dart';
 
 void main() {
+  Get.put(ConfigController());
+
   runApp(const ConfigEditorApp());
 }
 
