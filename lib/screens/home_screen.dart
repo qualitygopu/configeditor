@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/config_controller.dart';
+import '../widgets/sc_editor.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,14 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Temple Alarm Editor'),
+        title: Obx(() {
+          final count = controller.config.value?.alarms.length ?? 0;
+
+          return Text('Temple Alarm Editor ($count)');
+        }),
 
         actions: [
           FilledButton.icon(
             onPressed: controller.openJson,
-
             icon: const Icon(Icons.folder_open),
-
             label: const Text("Open"),
           ),
 
@@ -40,13 +43,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
           FilledButton.icon(
             onPressed: controller.saveJson,
-
             icon: const Icon(Icons.save),
-
             label: const Text("Save"),
           ),
 
           const SizedBox(width: 16),
+          FilledButton.icon(
+            onPressed: controller.addAlarm,
+            icon: const Icon(Icons.add),
+            label: const Text("Add Alarm"),
+          ),
+          const SizedBox(width: 16),
+          FilledButton.icon(
+            onPressed: controller.duplicateAlarm,
+            icon: const Icon(Icons.copy),
+            label: const Text("Duplicate"),
+          ),
+
+          const SizedBox(width: 10),
+
+          FilledButton.icon(
+            onPressed: controller.deleteAlarm,
+            icon: const Icon(Icons.delete),
+            label: const Text("Delete"),
+          ),
+          const SizedBox(width: 10),
         ],
       ),
       body: Row(
@@ -100,6 +121,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
               switch (selectedIndex) {
                 case 0:
+                  if (controller.config.value!.alarms.isEmpty) {
+                    return Center(
+                      child: FilledButton.icon(
+                        onPressed: controller.addAlarm,
+                        icon: const Icon(Icons.add),
+                        label: const Text("Create First Alarm"),
+                      ),
+                    );
+                  }
                   return Row(
                     children: [
                       SizedBox(
@@ -114,14 +144,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             return ListTile(
                               selected: controller.selectedAlarm.value == index,
-
                               title: Text(alarm.tit),
-
                               subtitle: Text(alarm.id ?? ""),
-
                               trailing: Switch(
                                 value: alarm.state,
-
                                 onChanged: (_) {},
                               ),
 
@@ -145,27 +171,77 @@ class _HomeScreenState extends State<HomeScreen> {
                           return Padding(
                             padding: const EdgeInsets.all(20),
 
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      initialValue: alarm.tit,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Title',
+                                      ),
+                                      onChanged: (v) {
+                                        alarm.tit = v;
+                                        controller.config.refresh();
+                                      },
+                                    ),
 
-                              children: [
-                                Text(
-                                  alarm.tit,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.headlineMedium,
+                                    const SizedBox(height: 16),
+
+                                    TextFormField(
+                                      initialValue: alarm.id ?? '',
+                                      decoration: const InputDecoration(
+                                        labelText: 'Alarm ID',
+                                      ),
+                                      onChanged: (v) {
+                                        alarm.id = v;
+                                        controller.config.refresh();
+                                      },
+                                    ),
+
+                                    const SizedBox(height: 16),
+
+                                    SwitchListTile(
+                                      title: const Text('Enabled'),
+                                      value: alarm.state,
+                                      onChanged: (v) {
+                                        alarm.state = v;
+                                        controller.config.refresh();
+                                      },
+                                    ),
+                                    DropdownButtonFormField(
+                                      value: alarm.type,
+
+                                      items: const [
+                                        DropdownMenuItem(
+                                          value: "time",
+                                          child: Text("Time"),
+                                        ),
+                                      ],
+
+                                      onChanged: (value) {
+                                        alarm.type = value.toString();
+
+                                        controller.config.refresh();
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: ScEditor(
+                                          selected: alarm.sc,
+
+                                          refresh: () {
+                                            controller.config.refresh();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-
-                                const SizedBox(height: 20),
-
-                                Text("ID : ${alarm.id}"),
-
-                                Text("Type : ${alarm.type}"),
-
-                                Text("Enabled : ${alarm.state}"),
-
-                                Text("SC Count : ${alarm.sc.length}"),
-                              ],
+                              ),
                             ),
                           );
                         }),

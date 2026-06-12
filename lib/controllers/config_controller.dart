@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import '../models/config_model.dart';
 import '../services/json_service.dart';
+import '../models/alarm_model.dart';
 
 class ConfigController extends GetxController {
   final config = Rxn<ConfigModel>();
@@ -41,31 +42,64 @@ class ConfigController extends GetxController {
     if (config.value == null) return;
 
     config.value!.alarms.add(
-      ConfigModel.fromJson({
-        "AlarmConfig": [
-          {
-            "tit": "New Alarm",
-            "id": "",
-            "state": true,
-            "tim": [
-              [0, 0],
-              [
-                [6, 6],
-              ],
-              [
-                [1, 31],
-              ],
-              [
-                [1, 12],
-              ],
-              [1, 2, 3, 4, 5, 6, 7],
-              [0],
-            ],
-            "SC": [0],
-            "type": "time",
-          },
+      AlarmModel(
+        tit: "New Alarm",
+        id: "",
+        state: true,
+        type: "time",
+        sc: [0],
+        tim: [
+          [0, 0],
+          [
+            [6, 6],
+          ],
+          [
+            [1, 31],
+          ],
+          [
+            [1, 12],
+          ],
+          [1, 2, 3, 4, 5, 6, 7],
+          [0],
         ],
-      }).alarms.first,
+      ),
+    );
+
+    selectedAlarm.value = config.value!.alarms.length - 1;
+
+    config.refresh();
+  }
+
+  void deleteAlarm() {
+    if (config.value == null) return;
+
+    if (config.value!.alarms.isEmpty) {
+      return;
+    }
+
+    config.value!.alarms.removeAt(selectedAlarm.value);
+
+    if (selectedAlarm.value > 0) {
+      selectedAlarm.value--;
+    }
+
+    config.refresh();
+  }
+
+  void duplicateAlarm() {
+    if (config.value == null) return;
+
+    final src = config.value!.alarms[selectedAlarm.value];
+
+    config.value!.alarms.add(
+      AlarmModel(
+        tit: "${src.tit} Copy",
+        id: src.id,
+        state: src.state,
+        tim: List.from(src.tim),
+        sc: List.from(src.sc),
+        type: src.type,
+      ),
     );
 
     config.refresh();
