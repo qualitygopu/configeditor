@@ -21,6 +21,12 @@ class ScheduleEditor extends StatelessWidget {
 
         _hourEditor(),
 
+        _dateEditor(),
+
+        _monthEditor(),
+
+        _specialEditor(),
+
         const SizedBox(height: 20),
 
         _weekDayEditor(),
@@ -159,6 +165,120 @@ class ScheduleEditor extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _dateEditor() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+
+      children: [
+        const Text("Date Ranges"),
+
+        ...List.generate(tim[2].length, (index) {
+          return Row(
+            children: [
+              SizedBox(
+                width: 80,
+                child: TextFormField(
+                  initialValue: tim[2][index][0].toString(),
+                  onChanged: (v) {
+                    tim[2][index][0] = int.tryParse(v) ?? 1;
+
+                    refresh();
+                  },
+                ),
+              ),
+
+              const Text(" - "),
+
+              SizedBox(
+                width: 80,
+                child: TextFormField(
+                  initialValue: tim[2][index][1].toString(),
+
+                  onChanged: (v) {
+                    tim[2][index][1] = int.tryParse(v) ?? 31;
+
+                    refresh();
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _monthEditor() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+
+      children: [
+        const Text("Month Ranges"),
+
+        ...List.generate(tim[3].length, (index) {
+          return Row(
+            children: [
+              SizedBox(
+                width: 80,
+                child: TextFormField(
+                  initialValue: tim[3][index][0].toString(),
+
+                  onChanged: (v) {
+                    tim[3][index][0] = int.tryParse(v) ?? 1;
+
+                    refresh();
+                  },
+                ),
+              ),
+
+              const Text(" - "),
+
+              SizedBox(
+                width: 80,
+                child: TextFormField(
+                  initialValue: tim[3][index][1].toString(),
+
+                  onChanged: (v) {
+                    tim[3][index][1] = int.tryParse(v) ?? 12;
+
+                    refresh();
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _specialEditor() {
+    const specialMap = {
+      0: "Normal",
+      1: "Festival",
+
+      2: "Amavasai",
+      3: "Pournami",
+
+      4: "Ekadasi",
+      5: "Pradosham",
+    };
+
+    return DropdownButton<int>(
+      value: tim[5].first,
+
+      items: specialMap.entries.map((e) {
+        return DropdownMenuItem(value: e.key, child: Text(e.value));
+      }).toList(),
+
+      onChanged: (v) {
+        tim[5] = [v];
+
+        refresh();
+      },
     );
   }
 }

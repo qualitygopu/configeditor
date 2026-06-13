@@ -70,7 +70,81 @@ class SongMasterScreen extends StatelessWidget {
 
                         DataCell(Text(row[3].toString())),
 
-                        DataCell(Text(row[4].toString())),
+                        DataCell(
+                          SizedBox(
+                            width: 180,
+
+                            child: TextFormField(
+                              initialValue: row[4].toString(),
+
+                              onChanged: (v) {
+                                row[4] = v;
+
+                                controller.config.refresh();
+                              },
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SizedBox(
+                            width: 120,
+
+                            child: TextFormField(
+                              initialValue: row[2].toString(),
+
+                              onChanged: (v) {
+                                row[2] = v;
+
+                                controller.config.refresh();
+                              },
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          DropdownButton<String>(
+                            value: row[1].toString(),
+
+                            items: const [
+                              DropdownMenuItem(value: "hr", child: Text("hr")),
+
+                              DropdownMenuItem(value: "LP", child: Text("LP")),
+
+                              DropdownMenuItem(
+                                value: "Vinayagar Suprabatham",
+                                child: Text("Suprabatham"),
+                              ),
+                            ],
+
+                            onChanged: (v) {
+                              row[1] = v;
+
+                              controller.config.refresh();
+                            },
+                          ),
+                        ),
+                        DataCell(
+                          DropdownButton<String>(
+                            value: row[3].toString(),
+
+                            items: const [
+                              DropdownMenuItem(
+                                value: "SYS",
+                                child: Text("SYS"),
+                              ),
+
+                              DropdownMenuItem(
+                                value: "CUS",
+                                child: Text("CUS"),
+                              ),
+                            ],
+
+                            onChanged: (v) {
+                              row[3] = v;
+
+                              controller.config.refresh();
+                            },
+                          ),
+                        ),
                       ],
                     );
                   }),

@@ -124,4 +124,28 @@ class ConfigController extends GetxController {
 
     config.refresh();
   }
+
+  List<String> validate() {
+    final errors = <String>[];
+
+    if (config.value == null) {
+      return errors;
+    }
+
+    final ids = <String>{};
+
+    for (final alarm in config.value!.alarms) {
+      if ((alarm.id ?? "").trim().isEmpty) {
+        errors.add("Alarm ID Empty");
+      }
+
+      if (ids.contains(alarm.id)) {
+        errors.add("Duplicate Alarm ID: ${alarm.id}");
+      }
+
+      ids.add(alarm.id ?? "");
+    }
+
+    return errors;
+  }
 }
