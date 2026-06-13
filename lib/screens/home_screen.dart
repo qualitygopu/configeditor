@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../controllers/config_controller.dart';
 import '../widgets/sc_editor.dart';
 import '../widgets/schedule_editor.dart';
+import 'songmaster_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -261,6 +262,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   );
+
+                case 1:
+                  return SongMasterScreen();
 
                 default:
                   return Center(child: Text(menu[selectedIndex]));

@@ -104,4 +104,24 @@ class ConfigController extends GetxController {
 
     config.refresh();
   }
+
+  void addSong() {
+    if (config.value == null) return;
+
+    config.value!.songMaster.add([100, "LP", "", "CUS", "New Song"]);
+
+    config.refresh();
+  }
+
+  void deleteLastSong() {
+    if (config.value == null) return;
+
+    if (config.value!.songMaster.isEmpty) {
+      return;
+    }
+
+    config.value!.songMaster.removeLast();
+
+    config.refresh();
+  }
 }
